@@ -1,0 +1,66 @@
+<% title = 'Rekap Bulanan' %>
+<% active = 'rekap' %>
+<div class="container my-5">
+    <div class="text-center mb-4">
+      <h2>Rekap Transaksi Bulan Tahun</h2>
+    </div>
+  
+    <form class="row g-2 justify-content-center align-items-center mb-4" method="get" action="/transaksi/rekap">
+      <div class="col-md-3">
+        <label for="bulan" class="form-label">Bulan:</label>
+        <select id="bulan" name="bulan" class="form-select" required>
+          <% for (let i = 1; i <= 12; i++) { %>
+            <option value="<%= i %>" <%= i == bulan ? 'selected' : '' %>>
+              <%= new Date(0, i - 1).toLocaleString('default', { month: 'long' }) %>
+            </option>
+          <% } %>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label for="tahun" class="form-label">Tahun:</label>
+        <select id="tahun" name="tahun" class="form-select" required>
+          <% for (let t = 2025; t <= 2027; t++) { %>
+            <option value="<%= t %>" <%= t == tahun ? 'selected' : '' %>><%= t %></option>
+          <% } %>
+        </select>
+      </div>
+      <div class="col-md-2 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-100">Lihat Rekap</button>
+      </div>
+    </form>
+  
+    <% if (summary) { %>
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="mb-3">Rangkuman:</h5>
+          <ul class="list-group">
+            <li class="list-group-item">Total Harga Beli: <strong>Rp<%= summary.total_beli.toLocaleString() %></strong></li>
+            <li class="list-group-item">Biaya Admin: Rp<%= summary.total_admin.toLocaleString() %></li>
+            <li class="list-group-item">Ongkir: Rp<%= summary.total_ongkir.toLocaleString() %></li>
+            <li class="list-group-item">Total Pengeluaran: Rp<%= summary.pengeluaran.toLocaleString() %></li>
+            <li class="list-group-item">Total Penjualan: Rp<%= summary.total_jual.toLocaleString() %></li>
+            <li class="list-group-item text-success fw-bold">Laba Bersih: Rp<%= summary.laba.toLocaleString() %></li>
+          </ul>
+        </div>
+      </div>
+  
+      <% if (compare) { %>
+        <div class="card mt-4 shadow-sm">
+          <div class="card-body">
+            <h5 class="mb-3">Perbandingan dengan Bulan <%= compare.bulanLalu %>/<%= compare.tahunLalu %></h5>
+            <ul class="list-group">
+              <li class="list-group-item">Laba Bulan Sebelumnya: Rp<%= compare.prev_laba.toLocaleString() %></li>
+              <li class="list-group-item">Selisih: Rp<%= compare.selisih.toLocaleString() %></li>
+              <li class="list-group-item fw-bold <%= compare.selisih >= 0 ? 'text-success' : 'text-danger' %>">
+                Perubahan: <%= compare.persen %>%
+              </li>
+            </ul>
+          </div>
+        </div>
+      <% } %>
+  
+    <% } else if (bulan && tahun) { %>
+      <div class="alert alert-warning text-center mt-4">Tidak ada data untuk bulan tersebut.</div>
+    <% } %>
+  </div>
+  

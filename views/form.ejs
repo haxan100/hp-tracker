@@ -1,0 +1,31 @@
+<% title = 'import Bulanan' %>
+<% active = 'import' %>
+<!DOCTYPE html>
+<html>
+<head><title>Upload Transaksi HP</title></head>
+<body>
+    <h2>Import Excel Transaksi HP</h2>
+    <form action="/import" method="POST" enctype="multipart/form-data">
+        <label>Bulan:</label>
+        <select name="bulan" required>
+            <% for (let i = 1; i <= 12; i++) { %>
+                <option value="<%= i %>"><%= new Date(0, i - 1).toLocaleString('default', { month: 'long' }) %></option>
+            <% } %>
+        </select><br><br>
+
+        <label>Tahun:</label>
+        <input type="number" name="tahun" value="<%= new Date().getFullYear() %>" required><br><br>
+
+        <label>Admin Fee:</label>
+        <input type="number" name="admin" required><br><br>
+
+        <label>Ongkir:</label>
+        <input type="number" name="ongkir" required><br><br>
+
+        <label>Upload Excel:</label>
+        <input type="file" name="file" accept=".xlsx" required><br><br>
+
+        <button type="submit">Import</button>
+    </form>
+</body>
+</html>
