@@ -49,6 +49,9 @@
           <li class="nav-item">
             <a class="nav-link <%= active === 'rekap' ? 'active' : '' %>" href="/transaksi/rekap">Rekap</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link <%= active === 'pengeluaran' ? 'active' : '' %>" href="/pengeluaran">Pengeluaran</a>
+          </li>
           <% if (typeof session !== 'undefined' && session.loggedIn) { %>
             <a href="/login/logout">Logout</a>
           <% } %>

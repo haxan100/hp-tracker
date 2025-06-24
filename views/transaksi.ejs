@@ -1,87 +1,89 @@
 <% title = 'Transaksi' %>
 <% active = 'transaksi' %>
 
-<h2>Data Transaksi HP</h2>
 <div class="container my-4">
-    <div class="text-center mb-4">
-      <h2>Data Transaksi HP</h2>
-    </div>
-  
-    <form class="row g-2 mb-4 justify-content-center" method="GET" action="/transaksi">
-      <div class="col-md-3">
-        <select name="bulan" class="form-select" required>
-          <% for (let i = 1; i <= 12; i++) { %>
-            <option value="<%= i %>" <%= i == bulan ? 'selected' : '' %>>
-              <%= new Date(0, i - 1).toLocaleString('default', { month: 'long' }) %>
-            </option>
-          <% } %>
-        </select>
-      </div>
-      <div class="col-md-2">
-        <input type="number" name="tahun" class="form-control" value="<%= tahun %>" required>
-      </div>
-      <div class="col-md-2">
-        <button class="btn btn-primary w-100">Tampilkan</button>
-      </div>
-    </form>
-  
-    <!-- Tabel -->
-    <div class="table-responsive">
-      <table class="table table-bordered text-center align-middle table-sm">
-        <thead class="table-dark">
-          <tr>
-            <th>No</th>
-            <th>HP</th>
-            <th>IMEI</th>
-            <th>Grade</th>
-            <th>Beli</th>
-            <th>Jual</th>
-            <th>Status</th>
-            <th>Update</th>
-            <th>Selisih</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% data.forEach((d, i) => { %>
-            <tr class="<%= d.status === 'laku' ? 'table-success' : '' %>">
-              <td><%= i + 1 %></td>
-              <td><%= d.hp %></td>
-              <td><%= d.imei %></td>
-              <td><%= d.grade %></td>
-              <td>Rp<%= d.harga_beli.toLocaleString() %></td>
-              <td>
-                <% if (d.status === 'laku') { %>
-                  Rp<%= d.harga_jual.toLocaleString() %>
-                <% } else { %>
-                  <form method="POST" action="/transaksi/update" class="d-flex gap-1">
-                    <input type="hidden" name="id" value="<%= d.id %>">
-                    <input type="hidden" name="bulan" value="<%= bulan %>">
-                    <input type="hidden" name="tahun" value="<%= tahun %>">
-                    <input type="number" name="harga_jual" class="form-control form-control-sm" value="<%= d.harga_jual || '' %>" required>
-                    <button class="btn btn-sm btn-success">✔</button>
-                  </form>
-                <% } %>
-              </td>
-              <td><%= d.status %></td>
-              <td>
-                <% if (d.status === 'laku') { %>
-                  <!-- Edit form -->
-                  <form method="POST" action="/transaksi/update" class="d-flex gap-1">
-                    <input type="hidden" name="id" value="<%= d.id %>">
-                    <input type="hidden" name="bulan" value="<%= bulan %>">
-                    <input type="hidden" name="tahun" value="<%= tahun %>">
-                    <input type="number" name="harga_jual" class="form-control form-control-sm" value="<%= d.harga_jual %>" required>
-                    <button class="btn btn-sm btn-warning">Edit</button>
-                  </form>
-                <% } %>
-              </td>
-              <td class="<%= d.harga_jual - d.harga_beli < 0 ? 'text-danger' : 'text-success' %> fw-bold">
-                <%= (d.harga_jual && d.harga_beli) ? (d.harga_jual - d.harga_beli >= 0 ? '+' : '') + 'Rp' + (d.harga_jual - d.harga_beli).toLocaleString() : '' %>
-              </td>
-            </tr>
-          <% }); %>
-        </tbody>
-      </table>
-    </div>
+  <div class="text-center mb-4">
+    <h2>Data Transaksi HP</h2>
   </div>
-  
+
+  <form class="row g-2 mb-4 justify-content-center" method="GET" action="/transaksi">
+    <div class="col-md-3">
+      <select name="bulan" class="form-select" required>
+        <% 
+          const nowMonth = new Date().getMonth() + 1;
+          const selectedMonth = bulan || nowMonth;
+          for (let i = 1; i <= 12; i++) { 
+        %>
+          <option value="<%= i %>" <%= i == selectedMonth ? 'selected' : '' %>>
+            <%= new Date(0, i - 1).toLocaleString('default', { month: 'long' }) %>
+          </option>
+        <% } %>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <input type="number" name="tahun" class="form-control" value="<%= tahun || new Date().getFullYear() %>" required>
+    </div>
+    <div class="col-md-2">
+      <button class="btn btn-primary w-100">Tampilkan</button>
+    </div>
+  </form>
+
+  <div class="table-responsive">
+    <table class="table table-bordered text-center align-middle table-sm">
+      <thead class="table-dark">
+        <tr>
+          <th>No</th>
+          <th>HP</th>
+          <th>IMEI</th>
+          <th>Grade</th>
+          <th>Beli</th>
+          <th>Jual</th>
+          <th>Status</th>
+          <th>Update</th>
+          <th>Selisih</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% data.forEach((d, i) => { %>
+          <tr class="<%= d.status === 'laku' ? 'table-success' : '' %>">
+            <td><%= i + 1 %></td>
+            <td><%= d.hp %></td>
+            <td><%= d.imei %></td>
+            <td><%= d.grade %></td>
+            <td>Rp<%= d.harga_beli.toLocaleString() %></td>
+            <td>
+              <% if (d.status === 'laku') { %>
+                Rp<%= d.harga_jual.toLocaleString() %>
+              <% } else { %>
+                <form method="POST" action="/transaksi/update" class="d-flex gap-1">
+                  <input type="hidden" name="id" value="<%= d.id %>">
+                  <input type="hidden" name="bulan" value="<%= selectedMonth %>">
+                  <input type="hidden" name="tahun" value="<%= tahun || new Date().getFullYear() %>">
+                  <input type="number" name="harga_jual" class="form-control form-control-sm" value="<%= d.harga_jual || '' %>" required>
+                  <button class="btn btn-sm btn-success">✔</button>
+                </form>
+              <% } %>
+            </td>
+            <td><%= d.status %></td>
+            <td>
+              <% if (d.status === 'laku') { %>
+                <form method="POST" action="/transaksi/update" class="d-flex gap-1">
+                  <input type="hidden" name="id" value="<%= d.id %>">
+                  <input type="hidden" name="bulan" value="<%= selectedMonth %>">
+                  <input type="hidden" name="tahun" value="<%= tahun || new Date().getFullYear() %>">
+                  <input type="number" name="harga_jual" class="form-control form-control-sm" value="<%= d.harga_jual %>" required>
+                  <button class="btn btn-sm btn-warning">Edit</button>
+                </form>
+              <% } %>
+            </td>
+            <td class="<%= d.harga_jual - d.harga_beli < 0 ? 'text-danger' : 'text-success' %> fw-bold">
+              <%= (d.harga_jual && d.harga_beli) ? 
+                    (d.harga_jual - d.harga_beli >= 0 ? '+' : '') + 
+                    'Rp' + (d.harga_jual - d.harga_beli).toLocaleString() : '' %>
+            </td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+</div>

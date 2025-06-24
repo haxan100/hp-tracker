@@ -1,0 +1,111 @@
+<% var title = 'Pengeluaran'; var active = 'pengeluaran'; %>
+<%
+  const now = new Date();
+  const selectedBulan = bulan || now.getMonth() + 1;
+  const selectedTahun = tahun || now.getFullYear();
+%>
+
+<div class="container my-4" style="max-width: 720px;">
+  <h2 class="text-center mb-4">Catatan Pengeluaran Bulanan</h2>
+
+  <form class="row g-2 mb-4" method="get" action="/pengeluaran">
+    <div class="col-md-5">
+      <select class="form-select" name="bulan" required>
+        <% for (let i = 1; i <= 12; i++) { %>
+          <option value="<%= i %>" <%= i == selectedBulan ? 'selected' : '' %>>
+            <%= new Date(0, i - 1).toLocaleString('default', { month: 'long' }) %>
+          </option>
+        <% } %>
+      </select>
+    </div>
+    <div class="col-md-5">
+      <select class="form-select" name="tahun" required>
+        <% const thisYear = new Date().getFullYear();
+           for (let y = thisYear - 2; y <= thisYear + 2; y++) { %>
+          <option value="<%= y %>" <%= y == selectedTahun ? 'selected' : '' %>><%= y %></option>
+        <% } %>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <button class="btn btn-primary w-100" type="submit">Lihat</button>
+    </div>
+  </form>
+
+  <% if (selectedBulan && selectedTahun) { %>
+    <form id="formPengeluaran" class="row g-2 mb-4">
+      <input type="hidden" name="bulan" value="<%= selectedBulan %>">
+      <input type="hidden" name="tahun" value="<%= selectedTahun %>">
+      <div class="col-md-6">
+        <input type="text" name="keterangan" class="form-control" placeholder="Keterangan" required>
+      </div>
+      <div class="col-md-4">
+        <input type="number" name="nominal" class="form-control" placeholder="Nominal" required>
+      </div>
+      <div class="col-md-2">
+        <button class="btn btn-success w-100" type="submit">Tambah</button>
+      </div>
+    </form>
+    
+    <% if (list.length > 0) { %>
+      <table class="table table-bordered table-hover">
+        <thead class="table-light">
+          <tr>
+            <th>#</th>
+            <th>Keterangan</th>
+            <th>Nominal</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% list.forEach((row, i) => { %>
+            <tr id="row-<%= row.id %>">
+              <td><%= i + 1 %></td>
+              <td><%= row.keterangan %></td>
+              <td>Rp<%= row.nominal.toLocaleString() %></td>
+              <td>
+                <button class="btn btn-danger btn-sm" onclick="hapusPengeluaran(<%= row.id %>)">Hapus</button>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } else { %>
+      <p class="text-muted">Belum ada pengeluaran tercatat untuk bulan ini.</p>
+    <% } %>
+  <% } %>
+</div>
+
+<script>
+  document.getElementById('formPengeluaran')?.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const form = e.target;
+    const data = new FormData(form);
+
+    const res = await fetch('/pengeluaran/tambah', {
+      method: 'POST',
+      body: new URLSearchParams(data)
+    });
+    const json = await res.json();
+
+    if (json.success) {
+      location.reload();
+    } else {
+      alert('Gagal menambahkan data');
+    }
+  });
+
+  async function hapusPengeluaran(id) {
+    if (!confirm('Yakin mau hapus?')) return;
+    const res = await fetch('/pengeluaran/hapus', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: 'id=' + id
+    });
+    const json = await res.json();
+    if (json.success) {
+      document.getElementById('row-' + id).remove();
+    } else {
+      alert('Gagal menghapus');
+    }
+  }
+</script>

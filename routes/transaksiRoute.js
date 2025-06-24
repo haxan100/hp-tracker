@@ -39,7 +39,6 @@ router.post('/update', (req, res) => {
       new Promise((resolve, reject) => db.query(sql, params, (err, result) => err ? reject(err) : resolve(result)));
   
     try {
-      // Ambil total bulan saat ini
       const rows = await dbQuery(`
         SELECT 
           SUM(hp.harga_beli) AS total_beli,
@@ -53,22 +52,31 @@ router.post('/update', (req, res) => {
   
       const row = rows[0];
   
-      if (!row.total_beli && !row.total_jual) {
+      // ✅ Ambil pengeluaran tambahan dari tabel pengeluaran
+      const pengeluaranTambahan = await dbQuery(
+        `SELECT SUM(nominal) AS total_pengeluaran FROM pengeluaran WHERE bulan = ? AND tahun = ?`,
+        [bulan, tahun]
+      );
+  
+      const pengeluaranEkstra = Number(pengeluaranTambahan[0].total_pengeluaran) || 0;
+  
+      // Jika tidak ada transaksi
+      if (!row.total_beli && !row.total_jual && pengeluaranEkstra === 0) {
         return res.render('rekap', { summary: null, compare: null, bulan, tahun });
       }
-  
-      const pengeluaran = (row.total_beli || 0) + (row.total_admin || 0) + (row.total_ongkir || 0);
-      const laba = (row.total_jual || 0) - pengeluaran;
   
       const summary = {
         total_beli: Number(row.total_beli) || 0,
         total_jual: Number(row.total_jual) || 0,
         total_admin: Number(row.total_admin) || 0,
         total_ongkir: Number(row.total_ongkir) || 0,
+        pengeluaran_tambahan: pengeluaranEkstra
       };
-      summary.pengeluaran = summary.total_beli + summary.total_admin + summary.total_ongkir;
+  
+      summary.pengeluaran = summary.total_beli + summary.total_admin + summary.total_ongkir + summary.pengeluaran_tambahan;
       summary.laba = summary.total_jual - summary.pengeluaran;
-      // Hitung bulan sebelumnya
+  
+      // ✅ Bandingkan dengan bulan lalu
       let bulanLalu = parseInt(bulan) - 1;
       let tahunLalu = parseInt(tahun);
       if (bulanLalu <= 0) {
@@ -87,17 +95,21 @@ router.post('/update', (req, res) => {
         WHERE t.bulan = ? AND t.tahun = ?
       `, [bulanLalu, tahunLalu]);
   
+      const pengeluaranLalu = await dbQuery(
+        `SELECT SUM(nominal) AS total_pengeluaran FROM pengeluaran WHERE bulan = ? AND tahun = ?`,
+        [bulanLalu, tahunLalu]
+      );
+  
       const prev = {
         total_beli: Number(prevRows[0].total_beli) || 0,
         total_jual: Number(prevRows[0].total_jual) || 0,
         total_admin: Number(prevRows[0].total_admin) || 0,
-        total_ongkir: Number(prevRows[0].total_ongkir) || 0
+        total_ongkir: Number(prevRows[0].total_ongkir) || 0,
+        pengeluaran_tambahan: Number(pengeluaranLalu[0].total_pengeluaran) || 0
       };
-      
-      const prev_pengeluaran = prev.total_beli + prev.total_admin + prev.total_ongkir;
+  
+      const prev_pengeluaran = prev.total_beli + prev.total_admin + prev.total_ongkir + prev.pengeluaran_tambahan;
       const prev_laba = prev.total_jual - prev_pengeluaran;
-
-      
   
       const selisih = summary.laba - prev_laba;
       const persen = prev_laba === 0 ? 100 : (selisih / prev_laba) * 100;
@@ -116,6 +128,7 @@ router.post('/update', (req, res) => {
       res.send('Terjadi kesalahan saat menghitung rekap.');
     }
   });
+  
   
   
 module.exports = router;

@@ -43,7 +43,8 @@ const transaksiRoute = require('./routes/transaksiRoute');
 app.get('/', (req, res) => res.redirect('/import'));
 app.use('/import', importRoute);
 app.use('/transaksi', transaksiRoute);
-
+const pengeluaranRoute = require('./routes/pengeluaranRoute');
+app.use('/pengeluaran', pengeluaranRoute);
 // ✅ Start server
 const PORT = process.env.PORT || 3005;
 app.listen(PORT, () => console.log(`🚀 Server running at http://localhost:${PORT}`));

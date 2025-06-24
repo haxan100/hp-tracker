@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
-const USER = 'heyiamhasan';
-const PASS = 'DuniaHasan2012s*';
+// const USER = 'heyiamhasan';
+// const PASS = 'DuniaHasan2012s*';
+const USER = 'a';
+const PASS = 'a';
 
 router.get('/', (req, res) => {
   res.render('login', { error: null });
