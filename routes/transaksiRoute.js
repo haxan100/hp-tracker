@@ -16,19 +16,20 @@ router.get('/', (req, res) => {
     res.render('transaksi', { data: result, bulan, tahun });
   });
 });
-router.post('/update', (req, res) => {
-    const { id, harga_jual, bulan, tahun } = req.body;
-  
-    // ✅ id harus dari tabel hp_transactions
-    db.query(`
-      UPDATE hp_transactions 
-      SET harga_jual = ?, status = 'laku'
-      WHERE id = ?
-    `, [harga_jual, id], err => {
-      if (err) throw err;
-      res.redirect(`/transaksi?bulan=${bulan}&tahun=${tahun}`);
-    });
-  });
+router.post('/update', async (req, res) => {
+  const { id, harga_jual } = req.body;
+
+  try {
+    await db.execute(
+      `UPDATE hp_transactions SET harga_jual = ?, status = 'laku' WHERE id = ?`,
+      [harga_jual, id]
+    );
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.json({ success: false });
+  }
+});
   
   
   router.get('/rekap', async (req, res) => {

@@ -66,12 +66,10 @@
               <% if (d.status === 'laku') { %>
                 Rp<%= d.harga_jual.toLocaleString() %>
               <% } else { %>
-                <form method="POST" action="/transaksi/update" class="d-flex flex-column flex-md-row gap-1">
+                <form class="form-update d-flex gap-1">
                   <input type="hidden" name="id" value="<%= d.id %>">
-                  <input type="hidden" name="bulan" value="<%= selectedMonth %>">
-                  <input type="hidden" name="tahun" value="<%= tahun || new Date().getFullYear() %>">
                   <input type="number" name="harga_jual" class="form-control form-control-sm" value="<%= d.harga_jual || '' %>" required>
-                  <button class="btn btn-sm btn-success w-100">✔</button>
+                  <button type="submit" class="btn btn-sm btn-success">✔</button>
                 </form>
               <% } %>
             </td>
@@ -98,3 +96,37 @@
     </table>
   </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  document.querySelectorAll('.form-update').forEach(form => {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const id = form.querySelector('input[name="id"]').value;
+      const harga_jual = form.querySelector('input[name="harga_jual"]').value;
+
+      try {
+        const res = await axios.post('/transaksi/update', { id, harga_jual });
+
+        if (res.data.success) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Harga diupdate',
+            timer: 1500,
+            showConfirmButton: false
+          });
+          setTimeout(() => location.reload(), 1000);
+        } else {
+          throw new Error('Update gagal');
+        }
+      } catch (err) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Gagal update',
+          text: 'Silakan coba lagi'
+        });
+      }
+    });
+  });
+</script>
