@@ -1,13 +1,24 @@
 <% title = 'Transaksi' %>
 <% active = 'transaksi' %>
-
+<% if (req.query.import === 'success') { %>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    Swal.fire({
+      icon: 'success',
+      title: 'Import Berhasil',
+      text: 'Data dari PDF berhasil disimpan.',
+      timer: 2500,
+      showConfirmButton: false
+    });
+  </script>
+<% } %>
 <div class="container my-4">
   <div class="text-center mb-4">
     <h2>Data Transaksi HP</h2>
   </div>
 
   <form class="row g-2 mb-4 justify-content-center" method="GET" action="/transaksi">
-    <div class="col-md-3">
+    <div class="col-12 col-md-4">
       <select name="bulan" class="form-select" required>
         <% 
           const nowMonth = new Date().getMonth() + 1;
@@ -20,10 +31,10 @@
         <% } %>
       </select>
     </div>
-    <div class="col-md-2">
+    <div class="col-6 col-md-3">
       <input type="number" name="tahun" class="form-control" value="<%= tahun || new Date().getFullYear() %>" required>
     </div>
-    <div class="col-md-2">
+    <div class="col-6 col-md-2">
       <button class="btn btn-primary w-100">Tampilkan</button>
     </div>
   </form>
@@ -55,24 +66,24 @@
               <% if (d.status === 'laku') { %>
                 Rp<%= d.harga_jual.toLocaleString() %>
               <% } else { %>
-                <form method="POST" action="/transaksi/update" class="d-flex gap-1">
+                <form method="POST" action="/transaksi/update" class="d-flex flex-column flex-md-row gap-1">
                   <input type="hidden" name="id" value="<%= d.id %>">
                   <input type="hidden" name="bulan" value="<%= selectedMonth %>">
                   <input type="hidden" name="tahun" value="<%= tahun || new Date().getFullYear() %>">
                   <input type="number" name="harga_jual" class="form-control form-control-sm" value="<%= d.harga_jual || '' %>" required>
-                  <button class="btn btn-sm btn-success">✔</button>
+                  <button class="btn btn-sm btn-success w-100">✔</button>
                 </form>
               <% } %>
             </td>
             <td><%= d.status %></td>
             <td>
               <% if (d.status === 'laku') { %>
-                <form method="POST" action="/transaksi/update" class="d-flex gap-1">
+                <form method="POST" action="/transaksi/update" class="d-flex flex-column flex-md-row gap-1">
                   <input type="hidden" name="id" value="<%= d.id %>">
                   <input type="hidden" name="bulan" value="<%= selectedMonth %>">
                   <input type="hidden" name="tahun" value="<%= tahun || new Date().getFullYear() %>">
                   <input type="number" name="harga_jual" class="form-control form-control-sm" value="<%= d.harga_jual %>" required>
-                  <button class="btn btn-sm btn-warning">Edit</button>
+                  <button class="btn btn-sm btn-warning w-100">Edit</button>
                 </form>
               <% } %>
             </td>

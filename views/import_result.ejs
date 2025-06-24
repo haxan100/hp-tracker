@@ -1,0 +1,39 @@
+<% title = 'Hasil Import PDF' %>
+<% active = 'transaksi' %>
+
+<div class="container my-4">
+  <h3 class="text-center mb-4">Hasil Import Transaksi ID: <%= transaksiId %></h3>
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-sm text-center align-middle">
+      <thead class="table-dark">
+        <tr>
+          <th>No</th>
+          <th>HP</th>
+          <th>IMEI</th>
+          <th>Grade</th>
+          <th>Harga Beli</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% data.forEach((item, i) => { %>
+          <tr>
+            <td><%= i + 1 %></td>
+            <td><%= item.hp %></td>
+            <td><%= item.imei %></td>
+            <td><%= item.grade %></td>
+            <td>Rp<%= item.harga_beli.toLocaleString() %></td>
+            <td><%= item.status %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="text-center mt-4">
+    <a href="/transaksi?bulan=<%= new Date().getMonth() + 1 %>&tahun=<%= new Date().getFullYear() %>" class="btn btn-secondary">
+      Kembali ke Daftar Transaksi
+    </a>
+  </div>
+</div>

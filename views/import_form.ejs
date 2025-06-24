@@ -1,0 +1,46 @@
+<% title = 'Import PDF Transaksi' %>
+<% active = 'import' %>
+
+<div class="container my-5">
+  <div class="text-center mb-4">
+    <h2>Import Transaksi dari PDF</h2>
+  </div>
+
+  <form method="POST" action="/api/import-pdf" enctype="multipart/form-data" class="row g-3 justify-content-center">
+    <div class="col-md-4">
+      <label class="form-label">Bulan</label>
+      <select name="bulan" class="form-select" required>
+        <% for (let i = 1; i <= 12; i++) { %>
+          <option value="<%= i %>">
+            <%= new Date(0, i - 1).toLocaleString('default', { month: 'long' }) %>
+          </option>
+        <% } %>
+      </select>
+    </div>
+
+    <div class="col-md-2">
+      <label class="form-label">Tahun</label>
+      <input type="number" name="tahun" value="<%= new Date().getFullYear() %>" class="form-control" required>
+    </div>
+
+    <div class="col-md-3">
+      <label class="form-label">Ongkir</label>
+      <input type="number" name="ongkir" value="0" class="form-control" required>
+    </div>
+
+    <div class="col-md-3">
+      <label class="form-label">Biaya Admin</label>
+      <input type="number" name="biaya_admin" value="0" class="form-control" required>
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label">File PDF</label>
+      <input type="file" name="file" class="form-control" accept=".pdf" required>
+    </div>
+
+    <div class="col-md-4 d-grid">
+      <label class="form-label d-none d-md-block">&nbsp;</label>
+      <button type="submit" class="btn btn-primary">Upload dan Import</button>
+    </div>
+  </form>
+</div>

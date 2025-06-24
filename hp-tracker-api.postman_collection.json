@@ -1,0 +1,258 @@
+{
+  "info": {
+    "name": "HP Tracker API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Import Transaksi",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/import",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "import"
+          ]
+        },
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "bulan",
+              "value": "",
+              "type": "text"
+            },
+            {
+              "key": "tahun",
+              "value": "",
+              "type": "text"
+            },
+            {
+              "key": "admin",
+              "value": "",
+              "type": "text"
+            },
+            {
+              "key": "ongkir",
+              "value": "",
+              "type": "text"
+            },
+            {
+              "key": "file",
+              "value": "",
+              "type": "file"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Tampilkan Transaksi",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/transaksi",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "transaksi"
+          ],
+          "query": [
+            {
+              "key": "bulan",
+              "value": ""
+            },
+            {
+              "key": "tahun",
+              "value": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Update Harga Jual",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/transaksi/update",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "transaksi",
+            "update"
+          ]
+        },
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "id",
+              "value": "",
+              "type": "text"
+            },
+            {
+              "key": "harga_jual",
+              "value": "",
+              "type": "text"
+            },
+            {
+              "key": "bulan",
+              "value": "",
+              "type": "text"
+            },
+            {
+              "key": "tahun",
+              "value": "",
+              "type": "text"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Rekap Bulanan",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/transaksi/rekap",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "transaksi",
+            "rekap"
+          ],
+          "query": [
+            {
+              "key": "bulan",
+              "value": ""
+            },
+            {
+              "key": "tahun",
+              "value": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Tampilkan Pengeluaran",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/pengeluaran",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "pengeluaran"
+          ],
+          "query": [
+            {
+              "key": "bulan",
+              "value": ""
+            },
+            {
+              "key": "tahun",
+              "value": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Tambah Pengeluaran",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/pengeluaran/tambah",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "pengeluaran",
+            "tambah"
+          ]
+        },
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "bulan",
+              "value": "",
+              "type": "text"
+            },
+            {
+              "key": "tahun",
+              "value": "",
+              "type": "text"
+            },
+            {
+              "key": "keterangan",
+              "value": "",
+              "type": "text"
+            },
+            {
+              "key": "nominal",
+              "value": "",
+              "type": "text"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Hapus Pengeluaran",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/pengeluaran/hapus",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "pengeluaran",
+            "hapus"
+          ]
+        },
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "id",
+              "value": "",
+              "type": "text"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
