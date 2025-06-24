@@ -36,6 +36,11 @@
   </form>
 
   <% if (summary) { %>
+    <%
+      // Koreksi pengeluaran secara manual (karena data controller salah)
+      const pengeluaran_koreksi = summary.total_beli + summary.total_admin + summary.total_ongkir + summary.pengeluaran_tambahan;
+      const laba_koreksi = summary.total_jual - pengeluaran_koreksi;
+    %>
     <div class="card shadow-sm">
       <div class="card-body">
         <h5 class="mb-3">Rangkuman:</h5>
@@ -43,9 +48,11 @@
           <li class="list-group-item">Total Harga Beli: <strong>Rp<%= summary.total_beli.toLocaleString() %></strong></li>
           <li class="list-group-item">Biaya Admin: Rp<%= summary.total_admin.toLocaleString() %></li>
           <li class="list-group-item">Ongkir: Rp<%= summary.total_ongkir.toLocaleString() %></li>
-          <li class="list-group-item">Total Pengeluaran: Rp<%= summary.pengeluaran.toLocaleString() %></li>
+          <li class="list-group-item">Total Pengeluaran: Rp<%= pengeluaran_koreksi.toLocaleString() %></li>
           <li class="list-group-item">Total Penjualan: Rp<%= summary.total_jual.toLocaleString() %></li>
-          <li class="list-group-item text-success fw-bold">Laba Bersih: Rp<%= summary.laba.toLocaleString() %></li>
+          <li class="list-group-item fw-bold <%= laba_koreksi >= 0 ? 'text-success' : 'text-danger' %>">
+            Laba Bersih: Rp<%= laba_koreksi.toLocaleString() %>
+          </li>
           <li class="list-group-item">Pengeluaran Lainnya: Rp<%= summary.pengeluaran_tambahan.toLocaleString() %></li>
         </ul>
       </div>
